@@ -106,6 +106,7 @@ const setup = async function (accounts,
 
 const proposalStateIndex = 2;
 const boostedState = 5;
+const executedState = 2;
 const preBoostedState = 4;
 const proposalTotalStakesIndex = 9;
 const numberOfChoices = 2;
@@ -1169,6 +1170,15 @@ contract('GenesisProtocol', accounts => {
 
     //expiere proposal by getting absolute majority
     await testSetup.genesisProtocol.vote(proposalId,YES,0,helpers.NULL_ADDRESS,{from:accounts[2]});
+    assert.equal(await testSetup.genesisProtocol.state(proposalId),executedState);
+
+    try {
+      await testSetup.genesisProtocol.execute(proposalId);
+      assert(false, 'cannot execute already executed proposal');
+    } catch (ex) {
+      helpers.assertVMException(ex);
+    }
+
     assert.equal(await testSetup.genesisProtocol.averagesDownstakesOfBoosted(organizationId),0);
   });
 

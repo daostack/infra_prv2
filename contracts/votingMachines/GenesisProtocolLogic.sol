@@ -503,7 +503,9 @@ contract GenesisProtocolLogic is IntVoteInterface {
      */
      // solhint-disable-next-line function-max-lines,code-complexity
     function _execute(bytes32 _proposalId) internal votable(_proposalId) returns(bool) {
+
         Proposal storage proposal = proposals[_proposalId];
+        require(proposal.state != ProposalState.Executed, "proposal already been executed");
         Parameters memory params = parameters[proposal.paramsHash];
         Proposal memory tmpProposal = proposal;
         uint256 totalReputation =
