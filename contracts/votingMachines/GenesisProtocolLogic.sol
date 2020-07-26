@@ -503,6 +503,7 @@ contract GenesisProtocolLogic is IntVoteInterface {
      */
      // solhint-disable-next-line function-max-lines,code-complexity
     function _execute(bytes32 _proposalId) internal votable(_proposalId) returns(bool) {
+
         Proposal storage proposal = proposals[_proposalId];
         Parameters memory params = parameters[proposal.paramsHash];
         Proposal memory tmpProposal = proposal;
@@ -608,8 +609,8 @@ contract GenesisProtocolLogic is IntVoteInterface {
             totalReputation
             );
             emit GPExecuteProposal(_proposalId, executionState);
-            ProposalExecuteInterface(proposal.callbacks).executeProposal(_proposalId, int(proposal.winningVote));
             proposal.daoBounty = proposal.daoBountyRemain;
+            ProposalExecuteInterface(proposal.callbacks).executeProposal(_proposalId, int(proposal.winningVote));
         }
         if (tmpProposal.state != proposal.state) {
             emit StateChange(_proposalId, proposal.state);
