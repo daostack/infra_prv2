@@ -505,7 +505,6 @@ contract GenesisProtocolLogic is IntVoteInterface {
     function _execute(bytes32 _proposalId) internal votable(_proposalId) returns(bool) {
 
         Proposal storage proposal = proposals[_proposalId];
-        require(proposal.state != ProposalState.Executed, "proposal already been executed");
         Parameters memory params = parameters[proposal.paramsHash];
         Proposal memory tmpProposal = proposal;
         uint256 totalReputation =
@@ -610,8 +609,8 @@ contract GenesisProtocolLogic is IntVoteInterface {
             totalReputation
             );
             emit GPExecuteProposal(_proposalId, executionState);
-            ProposalExecuteInterface(proposal.callbacks).executeProposal(_proposalId, int(proposal.winningVote));
             proposal.daoBounty = proposal.daoBountyRemain;
+            ProposalExecuteInterface(proposal.callbacks).executeProposal(_proposalId, int(proposal.winningVote));
         }
         if (tmpProposal.state != proposal.state) {
             emit StateChange(_proposalId, proposal.state);
